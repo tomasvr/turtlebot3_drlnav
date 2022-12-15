@@ -1,0 +1,38 @@
+<?xml version='1.0'?>
+<sdf version='1.6'>
+    <model name="obstacle4">
+      <link name="link_obstacle4">
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.16</radius>
+              <length>0.50</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <cylinder>
+              <radius>0.16</radius>
+              <length>0.50</length>
+            </cylinder>
+          </geometry>
+        </visual>
+      </link>
+      <plugin name="p3d_base_controller_obstacle4" filename="libgazebo_ros_p3d.so">
+        <ros>
+          <namespace>/obstacle</namespace>
+          <remapping>odom:=odom</remapping>
+        </ros>
+        <always_on>true</always_on>
+        <update_rate>50.0</update_rate>
+        <body_name>link_obstacle4</body_name>
+        <topic_name>odom_obs</topic_name>
+        <gaussian_noise>0.0</gaussian_noise>
+        <frame_name>world</frame_name>
+        <xyz_offset>0 0 0</xyz_offset>
+        <rpy_offset>0 0 0</rpy_offset>
+      </plugin>
+    </model>  
+</sdf>

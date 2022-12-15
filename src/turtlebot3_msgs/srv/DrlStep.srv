@@ -1,0 +1,8 @@
+float32[] action
+float32[] previous_action
+---
+float32[] state
+float32 reward
+bool done
+uint32 success
+float32 distance_traveled
