@@ -181,6 +181,8 @@ For more detailed instructions on ros workspaces check [this guide](https://auto
 
 # **USAGE**
 
+<img src="media/system_architecture.png" alt="System Architecture" width="700">
+
 ## **Running and training the DRL agent!**
 
 Now that we have finally completed the setup, all that's left to do is run and train the agent.
