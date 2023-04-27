@@ -7,6 +7,7 @@ import time
 import rclpy
 import torch
 import numpy
+from ..common.settings import REWARD_FUNCTION, COLLISION_OBSTACLE, COLLISION_WALL, COLLISION_REAL, TUMBLE, SUCCESS, TIMEOUT, RESULTS_NUM
 
 import xml.etree.ElementTree as ET
 
@@ -84,15 +85,15 @@ def unpause_simulation(agent_self):
             return
 
 def translate_outcome(outcome):
-    if outcome == 1:
+    if outcome == SUCCESS:
         return "SUCCESS"
-    elif outcome == 2:
+    elif outcome == COLLISION_WALL:
         return "COLLISION_WALL"
-    elif outcome == 3:
+    elif outcome == COLLISION_OBSTACLE:
         return "COLLISION_OBSTACLE"
-    elif outcome == 4:
+    elif outcome == TIMEOUT:
         return "TIMEOUT"
-    elif outcome == 5:
+    elif outcome == TUMBLE:
         return "TUMBLE"
     else:
         return f"UNKNOWN: {outcome}"

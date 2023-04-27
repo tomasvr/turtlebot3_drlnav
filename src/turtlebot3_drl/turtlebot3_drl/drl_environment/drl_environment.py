@@ -33,10 +33,8 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, qos_profile_sensor_data
 
 from ..common import utilities as util
-from ..common.settings import ENABLE_BACKWARD, EPISODE_TIMEOUT_SECONDS, ENABLE_MOTOR_NOISE
-
+from ..common.settings import ENABLE_BACKWARD, EPISODE_TIMEOUT_SECONDS, ENABLE_MOTOR_NOISE, UNKNOWN, SUCCESS, COLLISION_WALL, COLLISION_OBSTACLE, TIMEOUT, TUMBLE
 from . import reward as rw
-from .reward import UNKNOWN, SUCCESS, COLLISION_WALL, COLLISION_OBSTACLE, TIMEOUT, TUMBLE
 
 NUM_SCAN_SAMPLES = util.get_scan_count()
 LINEAR = 0

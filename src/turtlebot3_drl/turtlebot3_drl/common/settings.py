@@ -37,5 +37,14 @@ EPISODE_TIMEOUT_SECONDS = 50    # Number of seconds after which episode timeout 
 ENABLE_MOTOR_NOISE = False      # Add normally distributed noise to motor output to simulate hardware imperfections
 
 # Stacking
-STACK_DEPTH = 3                 # Number of subsequent frames processed per step
-FRAME_SKIP  = 4                 # Number of frames skipped in between subsequent frames
+STACK_DEPTH = 3             # Number of subsequent frames processed per step
+FRAME_SKIP  = 4             # Number of frames skipped in between subsequent frames
+
+# Episode outcome enumeration
+UNKNOWN = 0
+SUCCESS = 1
+COLLISION_WALL = 2
+COLLISION_OBSTACLE = 3
+TIMEOUT = 4
+TUMBLE = 5
+RESULTS_NUM = 6
