@@ -1,5 +1,5 @@
 from numpy.core.numeric import Infinity
-from common.settings import COLLISION_OBSTACLE, COLLISION_WALL, TUMBLE, SUCCESS, TIMEOUT, RESULTS_NUM
+from ..common.settings import COLLISION_OBSTACLE, COLLISION_WALL, TUMBLE, SUCCESS, TIMEOUT, RESULTS_NUM
 import time
 import os
 

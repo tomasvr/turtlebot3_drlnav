@@ -7,7 +7,7 @@ import time
 import rclpy
 import torch
 import numpy
-from ..common.settings import REWARD_FUNCTION, COLLISION_OBSTACLE, COLLISION_WALL, COLLISION_REAL, TUMBLE, SUCCESS, TIMEOUT, RESULTS_NUM
+from ..common.settings import REWARD_FUNCTION, COLLISION_OBSTACLE, COLLISION_WALL, TUMBLE, SUCCESS, TIMEOUT, RESULTS_NUM
 
 import xml.etree.ElementTree as ET
 
