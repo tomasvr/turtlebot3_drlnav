@@ -39,9 +39,10 @@ setup(
     license='Apache License, Version 2.0',
     entry_points={
         'console_scripts': [
-            'drl_environment = turtlebot3_drl.drl_environment.drl_environment:main',
-            'drl_gazebo = turtlebot3_drl.drl_gazebo.drl_gazebo:main',
-            'drl_agent = turtlebot3_drl.drl_agent.drl_agent:main',
+            'environment = turtlebot3_drl.drl_environment.drl_environment:main',
+            'gazebo_goals = turtlebot3_drl.drl_gazebo.drl_gazebo:main',
+            'train_agent = turtlebot3_drl.drl_agent.drl_agent:main_train',
+            'test_agent = turtlebot3_drl.drl_agent.drl_agent:main_test',
         ],
     },
 )
