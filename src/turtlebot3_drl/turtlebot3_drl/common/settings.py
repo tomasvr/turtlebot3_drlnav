@@ -3,7 +3,7 @@ ENABLE_BACKWARD          = False
 ENABLE_STACKING          = False
 ENABLE_VISUAL            = False    # Meant to be used only during evaluation/testing phase
 ENABLE_TRUE_RANDOM_GOALS = False    # If false, goals are taken randomly from a list of known valid goal positions
-MODEL_STORE_INTERVAL = 100          # Store the model weights every N episodes
+MODEL_STORE_INTERVAL = 3          # Store the model weights every N episodes
 
 # DRL parameters
 ACTION_SIZE     = 2         # Not used for DQN, see DQN_ACTION_SIZE
@@ -15,7 +15,7 @@ DISCOUNT_FACTOR = 0.99
 LEARNING_RATE   = 0.003
 TAU             = 0.003
 
-OBSERVE_STEPS   = 25000     # At training start random actions are taken for N steps for better exploration
+OBSERVE_STEPS   = 0     # At training start random actions are taken for N steps for better exploration
 STEP_TIME       = 0.01      # Delay between steps, can be set to 0
 EPSILON_DECAY   = 0.9995    # Epsilon decay per step
 EPSILON_MINIMUM = 0.05

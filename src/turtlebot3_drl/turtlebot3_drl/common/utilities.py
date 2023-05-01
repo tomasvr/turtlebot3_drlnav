@@ -12,7 +12,7 @@ from ..common.settings import REWARD_FUNCTION, COLLISION_OBSTACLE, COLLISION_WAL
 import xml.etree.ElementTree as ET
 
 with open('/tmp/drlnav_current_stage.txt', 'r') as f:
-    test_stage = int(f.read())
+    stage = int(f.read())
 
 def check_gpu():
     print("gpu torch available: ", torch.cuda.is_available())

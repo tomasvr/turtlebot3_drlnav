@@ -43,19 +43,17 @@ from rclpy.node import Node
 from ..common.replaybuffer import ReplayBuffer
 
 class DrlAgent(Node):
-    def __init__(self, training, algorithm, load_session="", load_episode=0, train_stage=util.test_stage):
+    def __init__(self, training, algorithm, load_session="", load_episode=0):
         super().__init__(algorithm + '_agent')
         self.algorithm = algorithm
         self.training = int(training)
         self.load_session = load_session
         self.episode = int(load_episode)
-        self.train_stage = train_stage
         if (not self.training and not self.load_session):
-            quit("ERROR no test agent specified")
+            quit("Invalid command: Testing but no model to load specified (example format: ros2 run turtlebot3_drl test_agent ddpg ddpg_0_stage4 1)")
         self.device = util.check_gpu()
-        self.sim_speed = util.get_simulation_speed(self.train_stage)
-        print(f"{'training' if (self.training) else 'testing' } on stage: {util.test_stage}")
-
+        self.sim_speed = util.get_simulation_speed(util.stage)
+        print(f"{'training' if (self.training) else 'testing' } on stage: {util.stage}")
         self.total_steps = 0
         self.observe_steps = OBSERVE_STEPS
 
@@ -66,7 +64,7 @@ class DrlAgent(Node):
         elif self.algorithm == 'td3':
             self.model = TD3(self.device, self.sim_speed)
         else:
-            quit(f"invalid algorithm specified: {self.algorithm}, chose one of: ddpg, td3, td3conv")
+            quit(f"invalid algorithm specified: {self.algorithm}, choose one of: dqn, ddpg, td3")
 
         self.replay_buffer = ReplayBuffer(self.model.buffer_size)
         self.graph = Graph()
@@ -75,7 +73,7 @@ class DrlAgent(Node):
         #                             Model loading                             #
         # ===================================================================== #
 
-        self.sm = StorageManager(self.algorithm, self.train_stage, self.load_session, self.episode, self.device)
+        self.sm = StorageManager(self.algorithm, self.load_session, self.episode, self.device, util.stage)
 
         if self.load_session:
             del self.model
@@ -83,16 +81,16 @@ class DrlAgent(Node):
             self.model.device = self.device
             self.sm.load_weights(self.model.networks)
             if self.training:
-                self.replay_buffer.buffer = self.sm.load_replay_buffer(self.model.buffer_size, os.path.join(self.load_session, 'stage'+str(self.train_stage)+'_latest_buffer.pkl'))
+                self.replay_buffer.buffer = self.sm.load_replay_buffer(self.model.buffer_size, os.path.join(self.load_session, 'stage'+str(self.sm.stage)+'_latest_buffer.pkl'))
             self.total_steps = self.graph.set_graphdata(self.sm.load_graphdata(), self.episode)
             print(f"global steps: {self.total_steps}")
             print(f"loaded model {self.load_session} (eps {self.episode}): {self.model.get_model_parameters()}")
         else:
-            self.sm.new_session_dir(util.test_stage)
+            self.sm.new_session_dir(util.stage)
             self.sm.store_model(self.model)
 
         self.graph.session_dir = self.sm.session_dir
-        self.logger = Logger(self.training, self.sm.machine_dir, self.sm.session_dir, self.sm.session, self.model.get_model_parameters(), self.model.get_model_configuration(), str(util.test_stage), self.algorithm, self.episode)
+        self.logger = Logger(self.training, self.sm.machine_dir, self.sm.session_dir, self.sm.session, self.model.get_model_parameters(), self.model.get_model_configuration(), str(util.stage), self.algorithm, self.episode)
         if ENABLE_VISUAL:
             self.visual = DrlVisual(self.model.state_size, self.model.hidden_size)
             self.model.attach_visual(self.visual)
@@ -199,6 +197,10 @@ def main_train(args=sys.argv[1:]):
     main(args)
 
 def main_test(args=sys.argv[1:]):
+    args = ['0'] + args
+    main(args)
+
+def main_real(args=sys.argv[1:]):
     args = ['0'] + args
     main(args)
 

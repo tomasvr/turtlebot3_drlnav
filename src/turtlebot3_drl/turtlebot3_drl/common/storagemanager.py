@@ -6,7 +6,7 @@ import socket
 import torch
 
 class StorageManager:
-    def __init__(self, name, stage, load_session, load_episode, device):
+    def __init__(self, name, load_session, load_episode, device, stage):
         if load_session and name not in load_session:
             print(f"ERROR: wrong combination of command and model! make sure command is: {name}_agent")
             while True:
@@ -15,18 +15,18 @@ class StorageManager:
         if 'examples' in load_session:
             self.machine_dir = (os.getenv('DRLNAV_BASE_PATH') + '/src/turtlebot3_drl/model/')
         self.name = name
-        self.stage = stage
+        self.stage = load_session[-1] if load_session else stage
         self.session = load_session
         self.load_episode = load_episode
         self.session_dir = os.path.join(self.machine_dir, self.session)
         self.map_location = device
 
-    def new_session_dir(self):
+    def new_session_dir(self, stage):
         i = 0
-        session_dir = os.path.join(self.machine_dir, f"{self.name}_{i}")
+        session_dir = os.path.join(self.machine_dir, f"{self.name}_{i}_stage{stage}")
         while(os.path.exists(session_dir)):
             i += 1
-            session_dir = os.path.join(self.machine_dir, f"{self.name}_{i}")
+            session_dir = os.path.join(self.machine_dir, f"{self.name}_{i}_stage{stage}")
         self.session = f"{self.name}_{i}"
         print(f"making new model dir: {self.session}")
         os.makedirs(session_dir)

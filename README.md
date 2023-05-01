@@ -196,18 +196,18 @@ You should see the gazebo GUI come up with the robot model loaded and two moving
 
 In a second terminal run
 ```
-ros2 run turtlebot3_drl drl_gazebo
+ros2 run turtlebot3_drl gazebo_goals
 ```
 
 In a third terminal run
 ```
-ros2 run turtlebot3_drl drl_environment
+ros2 run turtlebot3_drl environment
 ```
 
 And lastly, in the fourth terminal run the ddpg agent
 For DDPG:
 ```
-ros2 run turtlebot3_drl drl_agent ddpg 1
+ros2 run turtlebot3_drl train_agent ddpg
 ```
 
 The first argument indicates whether we are testing or training (0 = testing, 1 = training)
@@ -218,12 +218,12 @@ The first argument indicates whether we are testing or training (0 = testing, 1 
 
 for TD3:
 ```
-ros2 run turtlebot3_drl drl_agent td3 1
+ros2 run turtlebot3_drl train_agent td3
 ```
 
 for DQN:
 ```
-ros2 run turtlebot3_drl drl_agent dqn 1
+ros2 run turtlebot3_drl train_agent dqn
 ```
 
 Your robot should now be moving and training progress is being printed to the terminals!
@@ -239,21 +239,16 @@ The current state of the agent (weights, parameters, replay buffer and graphs) w
 In order to load a model for testing (e.g. ddpg_0 at episode 500) the following command should be used:
 
 ```
-ros2 run turtlebot3_drl drl_agent ddpg 0 "ddpg_0" 500
+ros2 run turtlebot3_drl test_agent ddpg "ddpg_0" 500
 ```
 
 In order to load a model to continue training (e.g. ddpg_0 at episode 500) the following command should be used:
 
 ```
-ros2 run turtlebot3_drl drl_agent ddpg 1 "ddpg_0" 500
+ros2 run turtlebot3_drl train_agent ddpg "ddpg_0" 500
 ```
 
-**Note:** If you are loading a model on a different stage than it was trained on (e.g. for transfer learning or testing generalizabilty) you have to add a 4th argument specifying the current stage. For example, model ddpg_0 which was trained on stage 4 can be evaluated in stage 3 using the following command
-```
-ros2 run turtlebot3_drl drl_agent ddpg 0 "ddpg_0" 500 3
-```
-
-(the original training stage is specified in training logfile (e.g _train_**stage2**_*.txt)
+**Note:** You can also test (or continue training) a model on a different stage than where it was originally trained on.
 
 ### Loading one of the included example models
 
@@ -266,28 +261,26 @@ ros2 launch turtlebot3_gazebo turtlebot3_drl_stage9.launch.py
 
 Terminal 2:
 ```
-ros2 run turtlebot3_drl drl_gazebo
+ros2 run turtlebot3_drl gazebo_goals
 ```
 
 Terminal 3:
 ```
-ros2 run turtlebot3_drl drl_environment
+ros2 run turtlebot3_drl environment
 ```
 
 Terminal 4:
 For DDPG:
 ```
-ros2 run turtlebot3_drl drl_agent ddpg 0 'examples/ddpg_0' 8000
+ros2 run turtlebot3_drl test_agent ddpg 'examples/ddpg_0' 8000
 ```
 
 Or, for TD3
 ```
-ros2 run turtlebot3_drl drl_agent td3 0 'examples/td3_0' 7400
+ros2 run turtlebot3_drl test_agent td3 'examples/td3_0' 7400
 ```
 
-The pretrained model should then start to navigate successfully.
-
-Note: Do not include 'examples/' in the command when running models trained on your own machine.
+You should then see the example model navigate successfully towards the goal
 
 ### Switching environments
 
@@ -356,15 +349,22 @@ The visual should mainly be used during evaluation as it can slow down training 
 
 ## Command Specification
 
-**drl_agent:**
+**train_agent:**
 
-```ros2 run turtlebot3_drl drl_agent [algorithm=dqn/ddpg/td3] [mode=0/1] [loadmodel=\path\to\model] [loadepisode=episode] [trainingstage=stage]```
+```ros2 run turtlebot3_drl train_agent [algorithm=dqn/ddpg/td3] [loadmodel=\path\to\model] [loadepisode=episode] ```
 
-`algorithm` can be either: `dqn`, `ddpg`, `td3`
-`mode` is either: `0` (training) or `1` (evaluating)
-`modelpath` is the path to the model to load
-`loadepisode` is the episode to load from `modelpath`
-`trainingstage` is the original training stage of `modelpath` (if different from current stage)
+* `algorithm`: algorithm to run, one of either: `dqn`, `ddpg`, `td3`
+* `modelpath`: path to the model to be loaded to continue training
+* `loadepisode`: is the episode to load from `modelpath`
+
+**test_agent:**
+
+```ros2 run turtlebot3_drl test_agent [algorithm=dqn/ddpg/td3] [loadmodel=\path\to\model] [loadepisode=episode] ```
+
+* `algorithm`: algorithm to run, one of either: `dqn`, `ddpg`, `td3`
+* `modelpath`: path to model to be loaded for testing
+* `loadepisode`: is the episode to load from `modelpath`
+
 
 ## Physical Robot
 
