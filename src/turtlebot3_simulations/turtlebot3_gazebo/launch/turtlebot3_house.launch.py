@@ -29,6 +29,7 @@ TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
 
 def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    pause = LaunchConfiguration('pause', default='true')
     world_file_name = 'turtlebot3_houses/' + TURTLEBOT3_MODEL + '.model'
     world = os.path.join(get_package_share_directory('turtlebot3_gazebo'),
                          'worlds', world_file_name)
@@ -40,7 +41,7 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(
                 os.path.join(pkg_gazebo_ros, 'launch', 'gzserver.launch.py')
             ),
-            launch_arguments={'world': world}.items(),
+            launch_arguments={'world': world, 'pause' : pause}.items(),
         ),
 
         IncludeLaunchDescription(

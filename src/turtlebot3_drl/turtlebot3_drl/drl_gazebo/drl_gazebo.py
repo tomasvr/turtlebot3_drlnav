@@ -34,7 +34,6 @@ from turtlebot3_msgs.srv import RingGoal
 import xml.etree.ElementTree as ET
 from ..drl_environment.drl_environment import ARENA_LENGTH, ARENA_WIDTH, ENABLE_DYNAMIC_GOALS
 from ..common.settings import ENABLE_TRUE_RANDOM_GOALS
-from ..common import utilities as util
 
 NO_GOAL_SPAWN_MARGIN = 0.3 # meters away from any wall
 class DRLGazebo(Node):
@@ -88,7 +87,6 @@ class DRLGazebo(Node):
         self.publish_callback()
         print("Init, goal pose:", self.goal_x, self.goal_y)
         time.sleep(1)
-        util.pause_simulation(self)
 
     def publish_callback(self):
         # Publish goal pose
