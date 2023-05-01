@@ -13,6 +13,7 @@ class Graph():
         self.session_dir = ""
         self.bin_size_average_reward = 3
         self.legend_labels = ['Unknown', 'Success', 'Collision Wall', 'Collision Dynamic', 'Timeout', 'Tumble']
+        self.legend_colors = ['b', 'g', 'r', 'c', 'm', 'y']
 
         self.outcome_histories = []
 
@@ -29,7 +30,6 @@ class Graph():
         titles = ['outcomes', 'avg critic loss over episode', 'avg actor loss over episode', 'avg reward over 10 episodes']
         for i in range(4):
             ax = self.ax[int(i/2)][int(i%2!=0)]
-            ax = plt.subplot(2, 2, i+1)
             ax.set_title(titles[i])
         self.legend_set = False
 
@@ -64,7 +64,7 @@ class Graph():
         if len(self.data_outcome_history) > 0:
             i = 0
             for outcome_history in self.outcome_histories:
-                self.ax[0][0].plot(xaxis, outcome_history, label=self.legend_labels[i])
+                self.ax[0][0].plot(xaxis, outcome_history, color=self.legend_colors[i], label=self.legend_labels[i])
                 i += 1
             if not self.legend_set:
                 self.ax[0][0].legend()
