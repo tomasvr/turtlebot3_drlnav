@@ -43,16 +43,18 @@ from rclpy.node import Node
 from ..common.replaybuffer import ReplayBuffer
 
 class DrlAgent(Node):
-    def __init__(self, training, algorithm, load_session="", load_episode=0):
+    def __init__(self, training, algorithm, load_session="", load_episode=0, real_robot=0):
         super().__init__(algorithm + '_agent')
         self.algorithm = algorithm
         self.training = int(training)
         self.load_session = load_session
         self.episode = int(load_episode)
+        self.real_robot = real_robot
+
         if (not self.training and not self.load_session):
             quit("Invalid command: Testing but no model to load specified (example format: ros2 run turtlebot3_drl test_agent ddpg ddpg_0_stage4 1)")
         self.device = util.check_gpu()
-        self.sim_speed = util.get_simulation_speed(util.stage)
+        self.sim_speed = util.get_simulation_speed(util.stage) if not self.real_robot else 1
         print(f"{'training' if (self.training) else 'testing' } on stage: {util.stage}")
         self.total_steps = 0
         self.observe_steps = OBSERVE_STEPS
@@ -100,14 +102,16 @@ class DrlAgent(Node):
 
         self.step_comm_client = self.create_client(DrlStep, 'step_comm')
         self.goal_comm_client = self.create_client(Goal, 'goal_comm')
-        self.gazebo_pause = self.create_client(Empty, '/pause_physics')
-        self.gazebo_unpause = self.create_client(Empty, '/unpause_physics')
+        if not self.real_robot:
+            self.gazebo_pause = self.create_client(Empty, '/pause_physics')
+            self.gazebo_unpause = self.create_client(Empty, '/unpause_physics')
         self.process()
 
 
     def process(self):
-        util.pause_simulation(self)
+        util.pause_simulation(self, self.real_robot)
         while (True):
+            util.wait_new_goal(self)
             episode_done = False
             step, reward_sum, loss_critic, loss_actor = 0, 0, 0, 0
             action_past = [0.0, 0.0]
@@ -118,7 +122,7 @@ class DrlAgent(Node):
                 state = [0.0] * (self.model.state_size * (self.model.stack_depth - 1)) + list(state)
                 next_state = [0.0] * (self.model.state_size * self.model.stack_depth)
 
-            util.unpause_simulation(self)
+            util.unpause_simulation(self, self.real_robot)
             time.sleep(0.5)
             episode_start = time.perf_counter()
 
@@ -159,31 +163,36 @@ class DrlAgent(Node):
                 time.sleep(self.model.step_time)
 
             # Episode done
-            util.pause_simulation(self)
+            util.pause_simulation(self, self.real_robot)
             self.total_steps += step
             duration = time.perf_counter() - episode_start
 
-            if self.total_steps >= self.observe_steps:
-                self.episode += 1
-                self.finish_episode(step, duration, outcome, distance_traveled, reward_sum, loss_critic, loss_actor)
-            else:
-                print(f"Observe steps completed: {self.total_steps}/{self.observe_steps}")
+            self.finish_episode(step, duration, outcome, distance_traveled, reward_sum, loss_critic, loss_actor)
 
     def finish_episode(self, step, eps_duration, outcome, dist_traveled, reward_sum, loss_critic, lost_actor):
-            print(f"Epi: {self.episode} R: {reward_sum:.2f} outcome: {util.translate_outcome(outcome)} \
-                    steps: {step} steps_total: {self.total_steps}, time: {eps_duration:.2f}")
-            if (self.training):
-                self.graph.update_data(step, self.total_steps, outcome, reward_sum, loss_critic, lost_actor)
-                self.logger.file_log.write(f"{self.episode}, {reward_sum}, {outcome}, {eps_duration}, {step}, {self.total_steps}, \
-                                                {self.replay_buffer.get_length()}, {loss_critic / step}, {lost_actor / step}\n")
+            if self.total_steps < self.observe_steps:
+                print(f"Observe phase: {self.total_steps}/{self.observe_steps} steps")
+                return
 
-                if (self.episode % MODEL_STORE_INTERVAL == 0) or (self.episode == 1):
-                    self.graph.draw_plots(self.episode)
-                    self.sm.save_session(self.episode, self.model.networks, self.graph.graphdata, self.replay_buffer.buffer)
-                    self.logger.update_comparison_file(self.episode, self.graph.get_success_count(), self.graph.get_reward_average())
-            else:
+            self.episode += 1
+            print(f"Epi: {self.episode:<5}R: {reward_sum:<8.0f}outcome: {util.translate_outcome(outcome):<13}", end='')
+            print(f"steps: {step:<6}steps_total: {self.total_steps:<7}time: {eps_duration:<6.2f}")
+
+            if (not self.training):
                 self.logger.update_test_results(step, outcome, dist_traveled, eps_duration, 0)
-                util.wait_new_goal(self)
+                return
+
+            self.graph.update_data(step, self.total_steps, outcome, reward_sum, loss_critic, lost_actor)
+            self.logger.file_log.write(f"{self.episode}, {reward_sum}, {outcome}, {eps_duration}, {step}, {self.total_steps}, \
+                                            {self.replay_buffer.get_length()}, {loss_critic / step}, {lost_actor / step}\n")
+
+            if (self.episode % MODEL_STORE_INTERVAL == 0) or (self.episode == 1):
+                self.graph.draw_plots(self.episode)
+                self.sm.save_session(self.episode, self.model.networks, self.graph.graphdata, self.replay_buffer.buffer)
+                self.logger.update_comparison_file(self.episode, self.graph.get_success_count(), self.graph.get_reward_average())
+
+
+
 
 def main(args=sys.argv[1:]):
     rclpy.init(args=args)
@@ -201,7 +210,7 @@ def main_test(args=sys.argv[1:]):
     main(args)
 
 def main_real(args=sys.argv[1:]):
-    args = ['0'] + args
+    args = ['0'] + args + ['0']
     main(args)
 
 if __name__ == '__main__':

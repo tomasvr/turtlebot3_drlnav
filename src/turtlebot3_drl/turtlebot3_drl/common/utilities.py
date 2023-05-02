@@ -66,7 +66,9 @@ def wait_new_goal(agent_self):
         print("Waiting for new goal...")
         time.sleep(1.0)
 
-def pause_simulation(agent_self):
+def pause_simulation(agent_self, real_robot):
+    if real_robot:
+        return
     while not agent_self.gazebo_pause.wait_for_service(timeout_sec=1.0):
         agent_self.get_logger().info('pause gazebo service not available, waiting again...')
     future = agent_self.gazebo_pause.call_async(Empty.Request())
@@ -75,7 +77,9 @@ def pause_simulation(agent_self):
         if future.done():
             return
 
-def unpause_simulation(agent_self):
+def unpause_simulation(agent_self, real_robot):
+    if real_robot:
+        return
     while not agent_self.gazebo_unpause.wait_for_service(timeout_sec=1.0):
         agent_self.get_logger().info('unpause gazebo service not available, waiting again...')
     future = agent_self.gazebo_unpause.call_async(Empty.Request())

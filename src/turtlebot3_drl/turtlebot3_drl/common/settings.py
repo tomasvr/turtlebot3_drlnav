@@ -1,11 +1,64 @@
-# general settings
+# ===================================================================== #
+#                           GENERAL SETTINGS                            #
+# ===================================================================== #
+
 ENABLE_BACKWARD          = False
 ENABLE_STACKING          = False
 ENABLE_VISUAL            = False    # Meant to be used only during evaluation/testing phase
-ENABLE_TRUE_RANDOM_GOALS = False    # If false, goals are taken randomly from a list of known valid goal positions
-MODEL_STORE_INTERVAL = 3          # Store the model weights every N episodes
+ENABLE_TRUE_RANDOM_GOALS = False    # If false, goals are selected semi-randomly from a list of known valid goal positions
+ENABLE_DYNAMIC_GOALS     = False    # If true, goal difficulty (distance) is adapted according to current success rate
+MODEL_STORE_INTERVAL     = 100      # Store the model weights every N episodes
+
+
+# ===================================================================== #
+#                         ENVIRONMENT SETTINGS                          #
+# ===================================================================== #
+
+# --- SIMULATION ENVIRONMENT SETTINGS ---
+REWARD_FUNCTION = "A"           # Defined in reward.py
+EPISODE_TIMEOUT_SECONDS = 50    # Number of seconds after which episode timeout occurs
+
+TOPIC_SCAN = 'scan'
+TOPIC_VELO = 'cmd_vel'
+TOPIC_ODOM = 'odom'
+
+EPISODE_TIMEOUT_SECONDS     = 50    # Number of seconds after which episode timeout occurs
+ARENA_LENGTH                = 4.2   # meters
+ARENA_WIDTH                 = 4.2   # meters
+SPEED_LINEAR_MAX            = 0.22  # m/s
+SPEED_ANGULAR_MAX           = 2.0   # rad/s
+
+LIDAR_DISTANCE_CAP          = 3.5   # meters
+THRESHOLD_COLLISION         = 0.13  # meters
+THREHSOLD_GOAL              = 0.20  # meters
+
+OBSTACLE_RADIUS             = 0.16  # meters
+MAX_NUMBER_OBSTACLES        = 6
+ENABLE_MOTOR_NOISE          = False # Add normally distributed noise to motor output to simulate hardware imperfections
+
+# --- REAL ROBOT ENVIRONMENT SETTINGS ---
+REAL_TOPIC_SCAN  = 'scan'
+REAL_TOPIC_VELO  = 'cmd_vel'
+REAL_TOPIC_ODOM  = 'odom'
+
+REAL_N_SCAN_SAMPLES         = 40    # LiDAR density count your robot is providing
+REAL_ARENA_LENGTH           = 4.2   # meters
+REAL_ARENA_WIDTH            = 4.2   # meters
+REAL_SPEED_LINEAR_MAX       = 0.22  # in m/s
+REAL_SPEED_ANGULAR_MAX      = 2.0   # in rad/s
+
+REAL_LIDAR_CORRECTION       = 0.40  # meters, subtracted from the real LiDAR values
+REAL_LIDAR_DISTANCE_CAP     = 3.5   # meters, scan distances are capped this value
+REAL_THRESHOLD_COLLISION    = 0.11  # meters
+REAL_THRESHOLD_GOAL         = 0.35  # meters
+
+
+# ===================================================================== #
+#                       DRL ALGORITHM SETTINGS                          #
+# ===================================================================== #
 
 # DRL parameters
+REWARD_FUNCTION = "A"       # Defined in reward.py
 ACTION_SIZE     = 2         # Not used for DQN, see DQN_ACTION_SIZE
 HIDDEN_SIZE     = 512       # Number of neurons in hidden layers
 
@@ -30,11 +83,6 @@ TARGET_UPDATE_FREQUENCY = 1000
 POLICY_NOISE            = 0.2
 POLICY_NOISE_CLIP       = 0.5
 POLICY_UPDATE_FREQUENCY = 2
-
-# drl_environment
-REWARD_FUNCTION = "A"           # Defined in reward.py
-EPISODE_TIMEOUT_SECONDS = 50    # Number of seconds after which episode timeout occurs
-ENABLE_MOTOR_NOISE = False      # Add normally distributed noise to motor output to simulate hardware imperfections
 
 # Stacking
 STACK_DEPTH = 3             # Number of subsequent frames processed per step

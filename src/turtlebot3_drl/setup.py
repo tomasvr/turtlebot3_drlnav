@@ -40,9 +40,11 @@ setup(
     entry_points={
         'console_scripts': [
             'environment = turtlebot3_drl.drl_environment.drl_environment:main',
+            'real_environment = turtlebot3_drl.drl_environment.drl_environment_real:main',
             'gazebo_goals = turtlebot3_drl.drl_gazebo.drl_gazebo:main',
             'train_agent = turtlebot3_drl.drl_agent.drl_agent:main_train',
             'test_agent = turtlebot3_drl.drl_agent.drl_agent:main_test',
+            'real_agent = turtlebot3_drl.drl_agent.drl_agent:main_real',
         ],
     },
 )

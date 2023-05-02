@@ -372,11 +372,59 @@ The models trained using this framework were validated on a low-cost physical sy
 
 ![Physical Robot](media/physical_robot.png?raw=true)
 
+In order to run one of your models (trained in simulation) on a physical robot follow these steps:
+* In settings.py, adjust the REAL ROBOT ENVIRONMENT SETTINGS
+  * Set the right ROS topics for your laser scan, odometry and velocity inputs/outpus
+  * REAL_N_SCAN_SAMPLES: Configure the number of Lidar samples your robot will provide
+  * REAL_LIDAR_CORRECTION: Depending on the dimensions of your robot the LiDAR values might need to be corrected to avoid the agent from detecting a 'collision' when the robot has not yet actually collided with any obstacle. This value is simply subtracted from the real LiDAR readings and finding the right value requires some trial and error.
+  * Set the remaining options such as the arena dimensions, max velocities, max LiDAR distance, and goal and collision thresholds.
+
+Next, when using a physical robot we do not need to run the gazebo simulation node or the gazebo_goals node. We will however still need to run an environment node and an agent node.
+
+At this point, turn on the robot and initalize all of its components. Ensure that:
+* LiDAR scan ROS messages are being sent over the configured TOPIC_SCAN topic
+* Odometry ROS messages are being sent over the TOPIC_ODOM topic
+* The robot is listening for velocity ROS messages on the TOPIC_VELO topic.
+
+If you are running nodes on multiple machines (e.g. one laptop and one robot) ensure that all machines have the same value set for `ROS_DOMAIN_ID` in `~/.bashrc`:
+
+`export ROS_DOMAIN_ID=[X]` (X can be any number as long as it is the same for each machine).
+
+Also ensure that all machines are connected to the same Local Area Network (LAN).
+
+Now, open a terminal on your laptop (or robot) and run the environment node for a real robot:
+```
+ros2 run turtlebot3_drl real_environment
+```
+
+Then, open another terminal and run the agent node for a real robot (substitute your model name and desired episode to load):
+```
+ros2 run turtlebot3_drl real_agent [ALGORITHM_NAME] [MODEL_NAME] [MODEL_EPISODE]
+```
+For example:
+```
+ros2 run turtlebot3_drl real_agent ddpg ddpg_1_stage4 1000
+```
+
+If everything loads correctly, you can now use the included script to generate a goal at location (x=1, y=1):
+```
+./spawn_goal 1 1
+```
+
+And that's it! You should now see the robot start moving towards the goal while avoiding obstacles.
+
+Note: you can use RViz in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value.
+
 ## Troubleshooting
 
 ### bash: /opt/ros/foxy/setup.bash: No such file or directory
 
-For some installations it might also be required to add the following line to your `~/bashrc` file:
+Depending on your installation method of ROS, it might be required to add the following line to your `~/bashrc` file:
 ```
 source ~/ros2_foxy/ros2-linux/setup.bash
 ```
+Also, make sure that you source the correct setup files in your `~/.bashrc` as described in the installation section of this guide.
+
+### Package 'turtlebot3_gazebo' not found: "package 'turtlebot3_gazebo' not found, searching: ['/opt/ros/foxy']"
+
+Make sure to run `source install/setup.bash` from the root of the repository in every terminal every time after you build the project using `colcon_build`. Otherwise the nodes will not run the updated version of your code but the old version from the last time you built and sourced.
