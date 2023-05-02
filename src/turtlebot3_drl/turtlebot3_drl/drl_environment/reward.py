@@ -8,7 +8,7 @@ def get_reward(succeed, action_linear, action_angular, distance_to_goal, goal_an
     return reward_function_internal(succeed, action_linear, action_angular, distance_to_goal, goal_angle, min_obstacle_distance)
 
 def get_reward_A(succeed, action_linear, action_angular, goal_dist, goal_angle, min_obstacle_dist):
-        # [0, -3.14]
+        # [-3.14, 0]
         r_yaw = -1 * abs(goal_angle)
 
         # [-4, 0]
@@ -34,6 +34,8 @@ def get_reward_A(succeed, action_linear, action_angular, goal_dist, goal_angle, 
             reward -= 2000
         return float(reward)
 
+# Define your own reward function by defining a new function: 'get_reward_X'
+# Replace X with your reward function name and configure it in settings.py
 
 def reward_initalize(init_distance_to_goal):
     global goal_dist_initial

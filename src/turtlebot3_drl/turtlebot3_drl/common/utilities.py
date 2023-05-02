@@ -63,7 +63,7 @@ def get_goal_status(agent_self):
 
 def wait_new_goal(agent_self):
     while(get_goal_status(agent_self) == False):
-        print("Waiting for new goal...")
+        print("Waiting for new goal... (if persists: reset gazebo_goals node)")
         time.sleep(1.0)
 
 def pause_simulation(agent_self, real_robot):
@@ -92,9 +92,9 @@ def translate_outcome(outcome):
     if outcome == SUCCESS:
         return "SUCCESS"
     elif outcome == COLLISION_WALL:
-        return "COLLISION_WALL"
+        return "COLL_WALL"
     elif outcome == COLLISION_OBSTACLE:
-        return "COLLISION_OBSTACLE"
+        return "COLL_OBST"
     elif outcome == TIMEOUT:
         return "TIMEOUT"
     elif outcome == TUMBLE:

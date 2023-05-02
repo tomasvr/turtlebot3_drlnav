@@ -22,7 +22,7 @@ import sys
 import time
 import numpy as np
 
-from ..common.settings import ENABLE_VISUAL, ENABLE_STACKING, OBSERVE_STEPS, MODEL_STORE_INTERVAL
+from ..common.settings import ENABLE_VISUAL, ENABLE_STACKING, OBSERVE_STEPS, MODEL_STORE_INTERVAL, GRAPH_DRAW_INTERVAL
 
 from ..common.storagemanager import StorageManager
 from ..common.graph import Graph
@@ -52,7 +52,7 @@ class DrlAgent(Node):
         self.real_robot = real_robot
 
         if (not self.training and not self.load_session):
-            quit("Invalid command: Testing but no model to load specified (example format: ros2 run turtlebot3_drl test_agent ddpg ddpg_0_stage4 1)")
+            quit("Invalid command: Testing but no model to load specified, see readme for correct format")
         self.device = util.check_gpu()
         self.sim_speed = util.get_simulation_speed(util.stage) if not self.real_robot else 1
         print(f"{'training' if (self.training) else 'testing' } on stage: {util.stage}")
@@ -187,9 +187,10 @@ class DrlAgent(Node):
                                             {self.replay_buffer.get_length()}, {loss_critic / step}, {lost_actor / step}\n")
 
             if (self.episode % MODEL_STORE_INTERVAL == 0) or (self.episode == 1):
-                self.graph.draw_plots(self.episode)
                 self.sm.save_session(self.episode, self.model.networks, self.graph.graphdata, self.replay_buffer.buffer)
                 self.logger.update_comparison_file(self.episode, self.graph.get_success_count(), self.graph.get_reward_average())
+            if (self.episode % GRAPH_DRAW_INTERVAL == 0) or (self.episode == 1):
+                self.graph.draw_plots(self.episode)
 
 
 

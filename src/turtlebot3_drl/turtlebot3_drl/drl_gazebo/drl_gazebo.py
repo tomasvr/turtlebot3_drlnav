@@ -100,13 +100,13 @@ class DRLGazebo(Node):
         self.delete_entity()
         if ENABLE_TRUE_RANDOM_GOALS:
             self.generate_random_goal()
-            print(f"generate (random) a new goal :) goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
+            print(f"success: generate (random) a new goal, goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
         elif ENABLE_DYNAMIC_GOALS:
             self.generate_dynamic_goal_pose(request.robot_pose_x, request.robot_pose_y, request.radius)
-            print(f"generate a new goal :) goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}, radius: {request.radius:.2f}")
+            print(f"success: generate a new goal, goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}, radius: {request.radius:.2f}")
         else:
             self.generate_goal_pose()
-            print(f"generate a new goal :) goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
+            print(f"success: generate a new goal, goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
         return response
 
     def task_fail_callback(self, request, response):
@@ -114,13 +114,13 @@ class DRLGazebo(Node):
         self.reset_simulation()
         if ENABLE_TRUE_RANDOM_GOALS:
             self.generate_random_goal()
-            print(f"reset the environment.. :( (random) goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
+            print(f"fail: reset the environment, (random) goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
         elif ENABLE_DYNAMIC_GOALS:
             self.generate_dynamic_goal_pose(request.robot_pose_x, request.robot_pose_y, request.radius)
-            print(f"reset the environment.. :( goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}, radius: {request.radius:.2f}")
+            print(f"fail: reset the environment, goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}, radius: {request.radius:.2f}")
         else:
             self.generate_goal_pose()
-            print(f"reset the environment.. :( goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
+            print(f"fail: reset the environment, goal pose: {self.goal_x:.2f}, {self.goal_y:.2f}")
         return response
 
     def goal_is_valid(self, goal_x, goal_y):

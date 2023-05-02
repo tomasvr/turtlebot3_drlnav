@@ -110,6 +110,7 @@ class DRLEnvironment(Node):
         self.goal_x = msg.position.x
         self.goal_y = msg.position.y
         self.new_goal = True
+        print(f"new goal! x: {self.goal_x} y: {self.goal_y}")
 
     def goal_comm_callback(self, request, response):
         response.new_goal = self.new_goal
@@ -166,15 +167,17 @@ class DRLEnvironment(Node):
 
     def clock_callback(self, msg):
         self.time_sec = msg.clock.sec
-        if self.reset_deadline:
-            self.clock_msgs_skipped += 1
-            if self.clock_msgs_skipped > 10: # Wait a few message for simulation to reset clock
-                episode_time = self.episode_timeout
-                if ENABLE_DYNAMIC_GOALS:
-                    episode_time = numpy.clip(episode_time * self.difficulty_radius, 10, 50)
-                self.episode_deadline = self.time_sec + episode_time
-                self.reset_deadline = False
-                self.clock_msgs_skipped = 0
+        if not self.reset_deadline:
+            return
+        self.clock_msgs_skipped += 1
+        if self.clock_msgs_skipped <= 10: # Wait a few message for simulation to reset clock
+            return
+        episode_time = self.episode_timeout
+        if ENABLE_DYNAMIC_GOALS:
+            episode_time = numpy.clip(episode_time * self.difficulty_radius, 10, 50)
+        self.episode_deadline = self.time_sec + episode_time
+        self.reset_deadline = False
+        self.clock_msgs_skipped = 0
 
     def stop_reset_robot(self, success):
         self.cmd_vel_pub.publish(Twist()) # stop robot
@@ -203,33 +206,29 @@ class DRLEnvironment(Node):
         state.append(float(action_angular_previous))                                        # range: [-1, 1]
         self.local_step += 1
 
-        if self.local_step > 30: # Grace period
-            # Success
-            if self.goal_distance < MINIMUM_GOAL_DISTANCE:
-                print("Outcome: Goal reached! :)")
-                self.succeed = SUCCESS
-            # Collision
-            elif self.obstacle_distance < MINIMUM_COLLISION_DISTANCE:
-                dynamic_collision = False
-                for obstacle_distance in self.obstacle_distances:
-                    if obstacle_distance < (MINIMUM_COLLISION_DISTANCE + OBSTACLE_RADIUS + 0.05):
-                        dynamic_collision = True
-                if dynamic_collision:
-                    print("Outcome: Collision! (obstacle) :(")
-                    self.succeed = COLLISION_OBSTACLE
-                else:
-                    print("Outcome: Collision! (wall) :(")
-                    self.succeed = COLLISION_WALL
-            # Timeout
-            elif self.time_sec >= self.episode_deadline:
-                print("Outcome: Time out! :(")
-                self.succeed = TIMEOUT
-            # Tumble
-            elif self.robot_tilt > 0.06 or self.robot_tilt < -0.06:
-                print("Outcome: Tumble! :(")
-                self.succeed = TUMBLE
-            if self.succeed is not UNKNOWN:
-                self.stop_reset_robot(self.succeed == SUCCESS)
+        if self.local_step <= 30: # Grace period to wait for simulation reset
+            return state
+        # Success
+        if self.goal_distance < THREHSOLD_GOAL:
+            self.succeed = SUCCESS
+        # Collision
+        elif self.obstacle_distance < THRESHOLD_COLLISION:
+            dynamic_collision = False
+            for obstacle_distance in self.obstacle_distances:
+                if obstacle_distance < (THRESHOLD_COLLISION + OBSTACLE_RADIUS + 0.05):
+                    dynamic_collision = True
+            if dynamic_collision:
+                self.succeed = COLLISION_OBSTACLE
+            else:
+                self.succeed = COLLISION_WALL
+        # Timeout
+        elif self.time_sec >= self.episode_deadline:
+            self.succeed = TIMEOUT
+        # Tumble
+        elif self.robot_tilt > 0.06 or self.robot_tilt < -0.06:
+            self.succeed = TUMBLE
+        if self.succeed is not UNKNOWN:
+            self.stop_reset_robot(self.succeed == SUCCESS)
         return state
 
     def initalize_episode(self, response):
@@ -278,8 +277,8 @@ class DRLEnvironment(Node):
             self.done = False
             self.reset_deadline = True
         if self.local_step % 200 == 0:
-            print(f"Rtot: {response.reward:.3f}, GD: {self.goal_distance:.3f}, GA: {math.degrees(self.goal_angle):.3f}° \
-                    MinD: {self.obstacle_distance:.3f}, Alin: {action_linear:.3f}, Aturn: {action_angular:.3f}")
+            print(f"Rtot: {response.reward:<8.2f}GD: {self.goal_distance:<8.2f}GA: {math.degrees(self.goal_angle):.1f}°\t", end='')
+            print(f"MinD: {self.obstacle_distance:<8.2f}Alin: {request.action[LINEAR]:<7.1f}Aturn: {request.action[ANGULAR]:<7.1f}")
         return response
 
 def main(args=sys.argv[1:]):
