@@ -1,5 +1,7 @@
 # Turtlebot3 DRL navigation
-### This repository contains a ROS2 framework for DRL autonomous navigation in simulation with the Turtlebot3. <br> Models trained in simulation can also be transferred to a real-world robot.
+### A ROS2 framework for DRL autonomous navigation in simulation with mobile robots (Turtlebot3).
+
+### Models trained in simulation can be transferred and have been validated on a real-world robot.
 
 
 <img src="media/simulation.gif" width="900">
