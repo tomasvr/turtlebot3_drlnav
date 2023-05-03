@@ -6,7 +6,26 @@
 
 <img src="media/simulation.gif" width="900">
 
-# **INSTALLATION**
+# **Table of contents**
+
+* [Installation](#installation)
+  * [ROS2](#installing-ros2)
+  * [Gazebo](#installing-gazebo)
+  * [PyTorch](#installing-python3-pytorch)
+  * [GPU (recommend)](#enabling-gpu-support-recommended)
+* [Training](#training)
+  * [Loading a Stored Model](#loading-a-stored-model)
+  * [Optional Configurations](#optional-configurations)
+    * [Backward Motion](#backward-motion)
+    * [Frame Stacking](#stacking)
+  * [Utilities](#utilities)
+    * [Visualization](#visualization)
+* [Physical Robot](#physical-robot)
+* [Troubleshooting](#troubleshooting)
+
+
+
+# **Installation**
 
 ## **Dependencies**
 
@@ -182,7 +201,7 @@ For more detailed instructions on ros workspaces check [this guide](https://auto
 
 **Note: Always make sure to first run ```source install/setup.bash``` or open a fresh terminal after building with `colcon build`.**
 
-# **USAGE**
+# **Training**
 
 <img src="media/system_architecture.png" alt="System Architecture" width="700">
 
@@ -233,9 +252,10 @@ Your robot should now be moving and training progress is being printed to the te
 
 **Note**: The matplotlib graph will initially be empty but will be displayed after the first `GRAPH_DRAW_INTERVAL` episodes configured in `settings.py`. During testing, terminal output is used instead of the graph.
 
-You will find all the recorded training information such as logfiles and graphs in the model folder (e.g. ddpg_0) within the `model` directory. Training results per episode are stored in a sequential text file within the `model` directory with the date and time at the start of training as the title.
+The state of your model will be stored automatically every `STORE_MODEL_INTERVAL` episodes configured in `settings.py`.
+You will find the trained model, logfiles and graphs in the model directory: `model/[HOSTNAME]/[MODEL_NAME]`. Training results per episode are stored in a sequential text file.
 
-Now you have everything up and running to train your model. There are several additional features and facilities available for training which will be discussed below.
+Now you have everything up and running to train your model. There are several additional options and utilities available for training which will be discussed below.
 
 ### Loading a stored model
 
@@ -296,6 +316,8 @@ ros2 launch turtlebot3_gazebo turtlebot3_drl_stage5.launch.py
 
 change `stage5` to any stage between 1-10 to train on different environments.
 
+## **Optional Configurations**
+
 ### Settings: change parameters
 
 The `settings.py` file contains most of the interesting parameters that you might wish to change, including the DRL hyperparameters.
@@ -308,6 +330,11 @@ The `reward.py` file contains the reward design. Here you can implement differen
 
 To enable the robot to also move in the backward direction simply set `ENABLE_BACKWARD` to `True` in `settings.py`.
 
+### Stacking
+
+'Frame stacking' can enable the robot to consider the direction in which obstacles are moving. The robot considers multiple subsequent laser scan frames instead of a single frame at each step. To enable frame stacking, set `ENABLE_STACKING` to `True` in `settings.py`. Also define `STACK_DEPTH` (number of frames per step) and `FRAME_SKIP` (number of frames to skip between two frames in the stack).
+
+## **Utilities**
 ### Graph Generation
 
 In order to compare results the repository includes a script that graphs the reward curves for different models. The script `reward_graph.py` can be found in the `util` directory.
@@ -345,13 +372,6 @@ The script will loop through all of your models and select the models to keep li
 
 To enable a complete visualization of the neural network neuron activity and biases simply set `ENABLE_VISUAL` to `True` in `settings.py`. This requires the python3 packages `pyqtgraph` and `PyQt5` to be installed.
 The visual should mainly be used during evaluation as it can slow down training significantly.
-
-**Note: If you get an error message saying that matplotlib is not responding, simply click wait and wait until the episode finishes.**
-
-### Stacking
-
-'Frame stacking' can enable the robot to consider the direction in which obstacles are moving. The robot considers multiple subsequent laser scan frames instead of a single frame at each step. To enable frame stacking, set `ENABLE_STACKING` to `True` in `settings.py`. Also define `STACK_DEPTH` (number of frames per step) and `FRAME_SKIP` (number of frames to skip between two frames in the stack).
-
 ## Command Specification
 
 **train_agent:**
@@ -370,8 +390,7 @@ The visual should mainly be used during evaluation as it can slow down training 
 * `modelpath`: path to model to be loaded for testing
 * `loadepisode`: is the episode to load from `modelpath`
 
-
-## Physical Robot
+# Physical Robot
 
 The models trained using this framework were validated on a low-cost physical system. Video demonstrations can be found on my [YouTube channel](https://www.youtube.com/@tomasvr1/videos).
 
@@ -425,7 +444,7 @@ If everything loads correctly, you can now use the included script to generate a
 
 **Note:** You can use RViz2 in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value: simply add a `laser_scan` display type and set its topic to `TOPIC_SCAN`.
 
-## Troubleshooting
+# Troubleshooting
 
 ### bash: /opt/ros/foxy/setup.bash: No such file or directory
 
