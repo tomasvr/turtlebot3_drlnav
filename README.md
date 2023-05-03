@@ -1,5 +1,6 @@
 # Turtlebot3 DRL navigation
-### This repository contains a ROS2 framework for DRL autonumous navigation in simulation with the Turtlebot3. <br> Models trained in simulation can also be transferred to a real-world robot.
+### This repository contains a ROS2 framework for DRL autonomous navigation in simulation with the Turtlebot3. <br> Models trained in simulation can also be transferred to a real-world robot.
+
 
 <img src="media/simulation.gif" width="900">
 
@@ -15,7 +16,7 @@
 
 ## **Installing ROS2**
 Install ROS2 foxy according to the following guide: [link](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html). You can choose either the Desktop or Bare Bones ROS installation, both work. <br>
-To prevent having to manually source the setup script everytime, add the following line at the end of your `~/.bashrc` file:
+To prevent having to manually source the setup script every time, add the following line at the end of your `~/.bashrc` file:
 
 ```
 source /opt/ros/foxy/setup.bash
@@ -28,12 +29,12 @@ More detailed installation instructions can be found [here](https://automaticadd
 
 For this project we will be using Gazebo **11.0.** To install Gazebo 11.0, navigate to the following [page](http://gazebosim.org/tutorials?tut=install_ubuntu), select Version 11.0 in the top-right corner and follow the default installation instructions.
 
-Next, we need to install a package which allows ROS2 to interface with Gazebo.
+Next, we need to install a package that allows ROS2 to interface with Gazebo.
 To install this package we simply execute the following command in a terminal:
 ```
 sudo apt install ros-foxy-gazebo-ros-pkgs
 ```
-After successfull installation we are now going to test our ROS2 + Gazebo setup by making a demo model move in the simulator. First install two additional packages for demo purposes (they might already be installed):
+After successful installation we are now going to test our ROS2 + Gazebo setup by making a demo model move in the simulator. First, install two additional packages for demo purposes (they might already be installed):
 ```
 sudo apt install ros-foxy-ros-core ros-foxy-geometry2
 ```
@@ -55,7 +56,7 @@ If something does not work, carefully check whether you executed all the command
 
 ## **Installing Python3, Pytorch**
 
-If you are using Ubuntu 20.04 as specified, Python should already be preinstalled. The last tested vesion for this project was Python 3.8.10
+If you are using Ubuntu 20.04 as specified, Python should already be preinstalled. The last tested version for this project was Python 3.8.10
 
 Install pip3 (python package manager for python 3) as follows:
 ```
@@ -73,13 +74,13 @@ pip3 install matplotlib pandas pyqtgraph==0.12.4 PyQt5==5.14.1 torch==1.10.0+cu1
 
 ## **Enabling GPU support (recommended)**
 
-We can significantly speed up the training procedure by making use of a GPU when available in your computer. If no GPU is available or it is not initalized correctly the training will automatically be redirected to the CPU. Since most users have access to an NVIDIA GPU we will explain how to enable this to work with PyTorch on linux.
+We can significantly speed up the training procedure by making use of a GPU. If no GPU is available or it is not initialized correctly the training will automatically be redirected to the CPU. Since most users have access to an NVIDIA GPU we will explain how to enable this to work with PyTorch on linux.
 Three different components are required to train on GPU:
 - NVIDIA drivers for linux
 - The CUDA library for linux
 - cuDNN (comes with pytorch and should be installed automatically)
 
-Press the windows/command key and type "Additional drivers" to make the corresponding linux menu come up. Here, multiple radio button options should be listed for installing different nvidia drivers. Install the option with the lastest version (highest number, e.g. currently nvidia-driver-510).
+Press the windows/command key and type "Additional drivers" to make the corresponding linux menu come up. Here, multiple radio button options should be listed for installing different nvidia drivers. Install the option with the latest version (highest number, e.g. currently nvidia-driver-510).
 
 The next step is to download the correct CUDA version. This will depend on your NVIDIA drivers and GPU variant. Generally, all you have to do is execute:
 ```
@@ -94,10 +95,10 @@ and
 nvidia-smi
 ```
 Which should display version numbers and GPU information.
-In case of doubt, consult one the following resources: [one](https://varhowto.com/install-pytorch-ubuntu-20-04/), [two](https://pytorch.org/get-started/locally/), [three](https://docs.nvidia.com/deploy/cuda-compatibility/index.html)
+In case of doubt, consult one of the following resources: [one](https://varhowto.com/install-pytorch-ubuntu-20-04/), [two](https://pytorch.org/get-started/locally/), [three](https://docs.nvidia.com/deploy/cuda-compatibility/index.html)
 
 ## **Downloading the code base and building**
-<!-- Now it's time to create a workspace which will serve as the basis for our project. To do this, follow the tutorial [here](https://automaticaddison.com/how-to-create-a-workspace-ros-2-foxy-fitzroy/) -->
+<!-- Now it's time to create a workspace that will serve as the basis for our project. To do this, follow the tutorial [here](https://automaticaddison.com/how-to-create-a-workspace-ros-2-foxy-fitzroy/) -->
 
 Now it's time to download the repository to the actual code.
 
@@ -124,12 +125,12 @@ Next, install the correct rosdep tool
 sudo apt install python3-rosdep2
 ```
 
-Then initalize rosdep by running
+Then initialize rosdep by running
 ```
 rosdep update
 ```
 
-Now we can use rosdep to install all ROS packaged needed by our repository
+Now we can use rosdep to install all ROS packages needed by our repository
 ```
 rosdep install -i --from-path src --rosdistro foxy -y
 ```
@@ -153,7 +154,7 @@ After colcon has finished building source the repository
 source install/setup.bash
 ```
 
-The last thing to we need to do before running the code is add a few lines to our `~/.bashrc` file so that they are automatically executed whenever we open a new terminal. Add the following lines at the end of your `~/.bashrc` file and **replace ~/path/to/turtlebot3_drlnav/repo by the path where you cloned the repository. (e.g. ~/turtlebot3_drlnav)**
+The last thing we need to do before running the code is add a few lines to our `~/.bashrc` file so that they are automatically executed whenever we open a new terminal. Add the following lines at the end of your `~/.bashrc` file and **replace ~/path/to/turtlebot3_drlnav/repo with the path where you cloned the repository. (e.g. ~/turtlebot3_drlnav)**
 ```
 # ROS2 domain id for network communication, machines with the same ID will receive each others' messages
 export ROS_DOMAIN_ID=1
@@ -192,7 +193,7 @@ Open up four different terminals however you like (I recommended using `terminat
 ros2 launch turtlebot3_gazebo turtlebot3_drl_stage4.launch.py
 ```
 You should see the gazebo GUI come up with the robot model loaded and two moving obstacles (this might take a while to load).
-**Note: always run the 'launch' command first before any other nodes as it will set the stage parameter for all of the other the nodes.**
+**Note: always run the 'launch' command first before any other nodes as it will set the stage parameter for all of the other nodes.**
 
 In a second terminal run
 ```
@@ -234,7 +235,7 @@ Now you have everything up and running to train your model. There are several ad
 
 ### Loading a stored model
 
-The current state of the agent (weights, parameters, replay buffer and graphs) will be stored automatically every N episodes as configured by the `store_interval` variable in the `common/settings.py` file.
+The current state of the agent (weights, parameters, replay buffer, and graphs) will be stored automatically every N episodes as configured by the `store_interval` variable in the `common/settings.py` file.
 
 In order to load a model for testing (e.g. ddpg_0 at episode 500) the following command should be used:
 
@@ -280,16 +281,16 @@ Or, for TD3
 ros2 run turtlebot3_drl test_agent td3 'examples/td3_0' 7400
 ```
 
-You should then see the example model navigate successfully towards the goal
+You should then see the example model navigate successfully toward the goal
 
 ### Switching environments
 
-You can can switch between 10 different environments by changing the stage number in the launch command:
+You can switch between 10 different environments by changing the stage number in the launch command:
 ```
 ros2 launch turtlebot3_gazebo turtlebot3_drl_stage5.launch.py
 ```
 
-change `stage5` to and stage between 1-10 to train on different environments.
+change `stage5` to any stage between 1-10 to train on different environments.
 
 ### Settings: change parameters
 
@@ -305,7 +306,7 @@ To enable the robot to also move in the backward direction simply set `ENABLE_BA
 
 ### Graph Generation
 
-In order to compare results the repository includes a script which graphs the reward curves for different models. The script `reward_graph.py` can be found in the `util` directory.
+In order to compare results the repository includes a script that graphs the reward curves for different models. The script `reward_graph.py` can be found in the `util` directory.
 
 To compare the reward curve for `ddpg_0` and `td3_0` every 100 episodes we type:
 ```
@@ -314,16 +315,16 @@ python3 util/reward_graph.py 100 examples/ddpg_0 examples/td3_0
 
 Again, `examples/` should not be included in the path for your own models.
 
-**Note: graph generation will only work if training has not been stopped and continued. Otherwise you first need to merge the different _train_stage*.txt files into a single file**
+**Note: graph generation will only work correctly if training has not been stopped and continued. Otherwise you first need to merge the different _train_stage*.txt files into a single file**
 
 ### Cleaning model data
 
 Training models can generate a lot of data, especially if you save the model often. In order to automatically clean models to save space, two cleaning scripts are included in the `util` folder.
 
-**CAUTION: use the following scripts with caution as deleted data cannot be retrieved! Carefully examine the script settings and double check the command line arguments you enter**
+**CAUTION: use the following scripts with caution as deleted data cannot be retrieved! Carefully examine the script settings and double-check the command line arguments you enter**
 
 The following line will clean ddpg_0 removing all saved model states except:
-* The model state for the 4 best performing episodes
+* The model state for the 4 best-performing episodes
 * The model state for the most recent episode
 `python3 util/clean_single_model.py ddpg_0`
 
@@ -345,7 +346,7 @@ The visual should mainly be used during evaluation as it can slow down training 
 
 ### Stacking
 
-'Frame stacking' can enable the robot to consider the direction in which obstacles are moving. The robot considers multiple subsequent laser scan frames instead of a single frame at each step. To enable frame stacking, set `ENABLE_STACKING` to `True` in `settings.py`. Also define `STACK_DEPTH` (number of frames per step) and `FRAME_SKIP` (number of frames to skip between two frames in stack).
+'Frame stacking' can enable the robot to consider the direction in which obstacles are moving. The robot considers multiple subsequent laser scan frames instead of a single frame at each step. To enable frame stacking, set `ENABLE_STACKING` to `True` in `settings.py`. Also define `STACK_DEPTH` (number of frames per step) and `FRAME_SKIP` (number of frames to skip between two frames in the stack).
 
 ## Command Specification
 
@@ -379,14 +380,14 @@ The are three main requirements for a robot to be compatible with this project:
 
 To run one of your models (trained in simulation) on a physical robot follow these steps:
 * In settings.py, adjust the REAL ROBOT ENVIRONMENT SETTINGS
-  * **REAL_TOPIC**: Set the right ROS topics for your laser scan, odometry and velocity inputs/outpus
+  * **REAL_TOPIC**: Set the right ROS topics for your laser scan, odometry and velocity inputs/outputs
   * **REAL_N_SCAN_SAMPLES**: Configure the number of Lidar samples your robot will provide
   * **REAL_LIDAR_CORRECTION**: Depending on the dimensions of your robot the LiDAR values might need to be corrected to avoid the agent from detecting a 'collision' when the robot has not yet actually collided with any obstacle. This value is simply subtracted from the real LiDAR readings and finding the right value requires some trial and error.
   * Set the remaining options such as the arena dimensions, max velocities, max LiDAR distance, and goal and collision thresholds.
 
 Next, when using a physical robot we do not need to run the gazebo simulation node or the gazebo_goals node. We will however still need to run an environment node and an agent node.
 
-At this point, turn on the robot and initalize all of its components. Ensure that:
+At this point, turn on the robot and initialize all of its components. Ensure that:
 * LiDAR scan ROS messages are being sent over the configured TOPIC_SCAN topic
 * Odometry ROS messages are being sent over the TOPIC_ODOM topic
 * The robot is listening for velocity ROS messages on the TOPIC_VELO topic.
@@ -416,9 +417,9 @@ If everything loads correctly, you can now use the included script to generate a
 ./spawn_goal 1 1
 ```
 
-**And that's it!** You should now see the robot start moving towards the goal while avoiding obstacles.
+**And that's it!** You should now see the robot start moving toward the goal while avoiding obstacles.
 
-**Note:** you can use RViz2 in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value: simply add a `laser_scan` display type and set its topic to `TOPIC_SCAN`.
+**Note:** You can use RViz2 in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value: simply add a `laser_scan` display type and set its topic to `TOPIC_SCAN`.
 
 ## Troubleshooting
 
