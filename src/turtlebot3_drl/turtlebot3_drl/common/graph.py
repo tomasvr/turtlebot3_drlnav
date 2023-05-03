@@ -60,7 +60,7 @@ class Graph():
             else:
                 for outcome_history in self.outcome_histories:
                     outcome_history.append(outcome_history[-1])
-                self.outcome_histories[self.data_outcome_history[idx]][-1] +1
+                self.outcome_histories[self.data_outcome_history[idx]][-1] += 1
 
         if len(self.data_outcome_history) > 0:
             i = 0
