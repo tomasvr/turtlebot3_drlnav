@@ -372,11 +372,16 @@ The models trained using this framework were validated on a low-cost physical sy
 
 ![Physical Robot](media/physical_robot.png?raw=true)
 
-In order to run one of your models (trained in simulation) on a physical robot follow these steps:
+The are three main requirements for a robot to be compatible with this project:
+* The robot needs to provide LiDAR scan information
+* The robot needs to provide any kind of odometry information (e.g. tachometers, SLAM, AMCL or GPS)
+* The robot needs to be able to work with linear and angular velocity messages
+
+To run one of your models (trained in simulation) on a physical robot follow these steps:
 * In settings.py, adjust the REAL ROBOT ENVIRONMENT SETTINGS
-  * Set the right ROS topics for your laser scan, odometry and velocity inputs/outpus
-  * REAL_N_SCAN_SAMPLES: Configure the number of Lidar samples your robot will provide
-  * REAL_LIDAR_CORRECTION: Depending on the dimensions of your robot the LiDAR values might need to be corrected to avoid the agent from detecting a 'collision' when the robot has not yet actually collided with any obstacle. This value is simply subtracted from the real LiDAR readings and finding the right value requires some trial and error.
+  * **REAL_TOPIC**: Set the right ROS topics for your laser scan, odometry and velocity inputs/outpus
+  * **REAL_N_SCAN_SAMPLES**: Configure the number of Lidar samples your robot will provide
+  * **REAL_LIDAR_CORRECTION**: Depending on the dimensions of your robot the LiDAR values might need to be corrected to avoid the agent from detecting a 'collision' when the robot has not yet actually collided with any obstacle. This value is simply subtracted from the real LiDAR readings and finding the right value requires some trial and error.
   * Set the remaining options such as the arena dimensions, max velocities, max LiDAR distance, and goal and collision thresholds.
 
 Next, when using a physical robot we do not need to run the gazebo simulation node or the gazebo_goals node. We will however still need to run an environment node and an agent node.
@@ -386,7 +391,7 @@ At this point, turn on the robot and initalize all of its components. Ensure tha
 * Odometry ROS messages are being sent over the TOPIC_ODOM topic
 * The robot is listening for velocity ROS messages on the TOPIC_VELO topic.
 
-If you are running nodes on multiple machines (e.g. one laptop and one robot) ensure that all machines have the same value set for `ROS_DOMAIN_ID` in `~/.bashrc`:
+**Note:** If you are running nodes on multiple machines (e.g. one laptop and one robot) ensure that all machines have the same value set for `ROS_DOMAIN_ID` in `~/.bashrc`:
 
 `export ROS_DOMAIN_ID=[X]` (X can be any number as long as it is the same for each machine).
 
@@ -411,9 +416,9 @@ If everything loads correctly, you can now use the included script to generate a
 ./spawn_goal 1 1
 ```
 
-And that's it! You should now see the robot start moving towards the goal while avoiding obstacles.
+**And that's it!** You should now see the robot start moving towards the goal while avoiding obstacles.
 
-Note: you can use RViz in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value.
+**Note:** you can use RViz2 in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value: simply add a `laser_scan` display type and set its topic to `TOPIC_SCAN`.
 
 ## Troubleshooting
 
