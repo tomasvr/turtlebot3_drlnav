@@ -2,13 +2,14 @@
 #                           GENERAL SETTINGS                            #
 # ===================================================================== #
 
-ENABLE_BACKWARD          = False
-ENABLE_STACKING          = False
+ENABLE_BACKWARD          = False    # Enable backward movement of the robot
+ENABLE_STACKING          = False    # Enable processing multiple consecutive scan frames at every observation step
 ENABLE_VISUAL            = False    # Meant to be used only during evaluation/testing phase
 ENABLE_TRUE_RANDOM_GOALS = False    # If false, goals are selected semi-randomly from a list of known valid goal positions
 ENABLE_DYNAMIC_GOALS     = False    # If true, goal difficulty (distance) is adapted according to current success rate
 MODEL_STORE_INTERVAL     = 100      # Store the model weights every N episodes
 GRAPH_DRAW_INTERVAL      = 10       # Draw the graph every N episodes (drawing too often will slow down training)
+GRAPH_AVERAGE_REWARD     = 10       # Average the reward graph over every N episodes
 
 
 # ===================================================================== #

@@ -1,17 +1,18 @@
-import numpy
 import os
+import numpy as np
 
+import matplotlib
 import matplotlib.pyplot as plt
 from turtlebot3_drl.drl_environment.reward import SUCCESS
-from .settings import MODEL_STORE_INTERVAL
+from .settings import GRAPH_DRAW_INTERVAL, GRAPH_AVERAGE_REWARD
+from matplotlib.ticker import MaxNLocator
 
+matplotlib.use('TkAgg')
 class Graph():
     def __init__(self):
-        plt.ion()
         plt.show()
 
         self.session_dir = ""
-        self.bin_size_average_reward = 3
         self.legend_labels = ['Unknown', 'Success', 'Collision Wall', 'Collision Dynamic', 'Timeout', 'Tumble']
         self.legend_colors = ['b', 'g', 'r', 'c', 'm', 'y']
 
@@ -31,6 +32,7 @@ class Graph():
         for i in range(4):
             ax = self.ax[int(i/2)][int(i%2!=0)]
             ax.set_title(titles[i])
+            ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         self.legend_set = False
 
     def set_graphdata(self, graphdata, episode):
@@ -48,7 +50,7 @@ class Graph():
         self.graphdata = [self.global_steps, self.data_outcome_history, self.data_rewards, self.data_loss_critic, self.data_loss_actor]
 
     def draw_plots(self, episode):
-        xaxis = numpy.array(range(episode))
+        xaxis = np.array(range(1, episode + 1))
 
         # Plot outcome history
         for idx in range(len(self.data_outcome_history)):
@@ -58,8 +60,7 @@ class Graph():
             else:
                 for outcome_history in self.outcome_histories:
                     outcome_history.append(outcome_history[-1])
-                foo = self.outcome_histories[self.data_outcome_history[idx]]
-                foo[-1] += 1
+                self.outcome_histories[self.data_outcome_history[idx]][-1] +1
 
         if len(self.data_outcome_history) > 0:
             i = 0
@@ -71,34 +72,34 @@ class Graph():
                 self.legend_set = True
 
         # Plot critic loss
-        y = numpy.array(self.data_loss_critic)
+        y = np.array(self.data_loss_critic)
         self.ax[0][1].plot(xaxis, y)
 
         # Plot actor loss
-        y = numpy.array(self.data_loss_actor)
+        y = np.array(self.data_loss_actor)
         self.ax[1][0].plot(xaxis, y)
 
         # Plot average reward
-        count = int(episode / self.bin_size_average_reward)
+        count = int(episode / GRAPH_AVERAGE_REWARD)
         if count > 0:
-            xaxis = numpy.array(range(self.bin_size_average_reward, episode+1, self.bin_size_average_reward))
+            xaxis = np.array(range(GRAPH_AVERAGE_REWARD, episode+1, GRAPH_AVERAGE_REWARD))
             averages = list()
             for i in range(count):
                 avg_sum = 0
-                for j in range(self.bin_size_average_reward):
-                    avg_sum += self.data_rewards[i * self.bin_size_average_reward + j]
-                averages.append(avg_sum / self.bin_size_average_reward)
-            y = numpy.array(averages)
+                for j in range(GRAPH_AVERAGE_REWARD):
+                    avg_sum += self.data_rewards[i * GRAPH_AVERAGE_REWARD + j]
+                averages.append(avg_sum / GRAPH_AVERAGE_REWARD)
+            y = np.array(averages)
             self.ax[1][1].plot(xaxis, y)
 
         plt.draw()
-        plt.pause(0.05)
+        plt.pause(0.2)
         plt.savefig(os.path.join(self.session_dir, "_figure.png"))
 
     def get_success_count(self):
-        suc = self.data_outcome_history[-MODEL_STORE_INTERVAL:]
+        suc = self.data_outcome_history[-GRAPH_DRAW_INTERVAL:]
         return suc.count(SUCCESS)
 
     def get_reward_average(self):
-        rew = self.data_rewards[-MODEL_STORE_INTERVAL:]
+        rew = self.data_rewards[-GRAPH_DRAW_INTERVAL:]
         return sum(rew) / len(rew)

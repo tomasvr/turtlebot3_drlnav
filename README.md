@@ -229,6 +229,8 @@ ros2 run turtlebot3_drl train_agent dqn
 
 Your robot should now be moving and training progress is being printed to the terminals!
 
+**Note**: The matplotlib graph will initially be empty but will be displayed after the first `GRAPH_DRAW_INTERVAL` episodes configured in `settings.py`. During testing, terminal output is used instead of the graph.
+
 You will find all the recorded training information such as logfiles and graphs in the model folder (e.g. ddpg_0) within the `model` directory. Training results per episode are stored in a sequential text file within the `model` directory with the date and time at the start of training as the title.
 
 Now you have everything up and running to train your model. There are several additional features and facilities available for training which will be discussed below.

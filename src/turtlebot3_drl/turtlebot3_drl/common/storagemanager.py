@@ -28,7 +28,7 @@ class StorageManager:
             i += 1
             session_dir = os.path.join(self.machine_dir, f"{self.name}_{i}_stage{stage}")
         self.session = f"{self.name}_{i}"
-        print(f"making new model dir: {self.session}")
+        print(f"making new model dir: {session_dir}")
         os.makedirs(session_dir)
         self.session = self.session
         self.session_dir = session_dir
