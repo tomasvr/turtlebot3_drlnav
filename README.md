@@ -8,6 +8,8 @@
 
 # **Table of contents**
 
+<img src="media/physical_demo.gif" width="200" alt="physical_demo.gif" align="right" />
+
 * [Installation](#installation)
   * [ROS2](#installing-ros2)
   * [Gazebo](#installing-gazebo)
