@@ -52,7 +52,7 @@ class DrlAgent(Node):
         self.real_robot = real_robot
 
         if (not self.training and not self.load_session):
-            quit("Invalid command: Testing but no model to load specified, see readme for correct format")
+            quit("\033[1m" + "\033[93m" + "Invalid command: Testing but no model to load specified, see readme for correct format" + "\033[0m}")
         self.device = util.check_gpu()
         self.sim_speed = util.get_simulation_speed(util.stage) if not self.real_robot else 1
         print(f"{'training' if (self.training) else 'testing' } on stage: {util.stage}")
@@ -66,7 +66,7 @@ class DrlAgent(Node):
         elif self.algorithm == 'td3':
             self.model = TD3(self.device, self.sim_speed)
         else:
-            quit(f"invalid algorithm specified: {self.algorithm}, choose one of: dqn, ddpg, td3")
+            quit("\033[1m" + "\033[93m" + f"invalid algorithm specified ({self.algorithm}), choose one of: dqn, ddpg, td3" + "\033[0m}")
 
         self.replay_buffer = ReplayBuffer(self.model.buffer_size)
         self.graph = Graph()
