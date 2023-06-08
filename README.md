@@ -3,11 +3,12 @@
 
 ### Models trained in simulation can be transferred and have been validated on a real-world robot.
 
-<img src="https://media.giphy.com/media/8zHZ0kfA2MpCF1X8wB/giphy.gif" width="900" alt="simulation_demo.gif"/>
+
+<img src="media/simulation.gif" width="900">
 
 # **Table of contents**
 
-<img src="https://media.giphy.com/media/r8OmYAR51nnkKAmPjp/giphy.gif" width="220" alt="physical_demo.gif" align="right" />
+<img src="media/physical_demo.gif" width="220" alt="physical_demo.gif" align="right" />
 
 * [Installation](#installation)
   * [Docker Installation (recommended)](#docker-installation-recommended)
@@ -440,7 +441,7 @@ The script will loop through all of your models and select the models to keep li
 
 ### Visualization
 
-<img src="https://media.giphy.com/media/8zHZ0kfA2MpCF1X8wB/giphy.gif" width="900">
+<img src="media/visual.gif" width="900">
 
 To enable a complete visualization of the neural network neuron activity and biases simply set `ENABLE_VISUAL` to `True` in `settings.py`. This requires the python3 packages `pyqtgraph` and `PyQt5` to be installed.
 The visual should mainly be used during evaluation as it can slow down training significantly.
