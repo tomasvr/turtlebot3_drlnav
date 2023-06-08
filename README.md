@@ -263,7 +263,7 @@ source $WORKSPACE_DIR/install/setup.bash
 # Allow gazebo to find our turtlebot3 models
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:$WORKSPACE_DIR/src/turtlebot3_simulations/turtlebot3_gazebo/models
 
-# Select which turtlebot model we will be using (default: burger, waffle, waffle_pi)
+# Select which turtlebot3 model we will be using (default: burger, waffle, waffle_pi)
 export TURTLEBOT3_MODEL=burger
 
 # Allow Gazebo to find the plugin for moving the obstacles
@@ -287,7 +287,7 @@ Open up four different terminals however you like (I recommended using `terminat
 ros2 launch turtlebot3_gazebo turtlebot3_drl_stage4.launch.py
 ```
 You should see the gazebo GUI come up with the robot model loaded and two moving obstacles (this might take a while to load).
-**Note: always run the 'launch' command first before any other nodes as it will set the stage parameter for all of the other nodes.**
+**Note: make sure to run the 'launch' command first before any other nodes as it will set the stage parameter.**
 
 In a second terminal run
 ```
@@ -326,7 +326,7 @@ Your robot should now be moving and training progress is being printed to the te
 **Note**: The matplotlib graph will initially be empty but will be displayed after the first `GRAPH_DRAW_INTERVAL` episodes configured in `settings.py`. During testing, terminal output is used instead of the graph.
 
 The state of your model will be stored automatically every `STORE_MODEL_INTERVAL` episodes configured in `settings.py`.
-You will find the trained model, logfiles and graphs in the model directory: `model/[HOSTNAME]/[MODEL_NAME]`. Training results per episode are stored in a sequential text file.
+You will find the trained model, logfiles, and graphs in the model directory: `model/[HOSTNAME]/[MODEL_NAME]`. Training results per episode are stored in a sequential text file.
 
 Now you have everything up and running to train your model. There are several additional options and utilities available for training which will be discussed below.
 
@@ -389,7 +389,7 @@ ros2 launch turtlebot3_gazebo turtlebot3_drl_stage5.launch.py
 
 change `stage5` to any stage between 1-10 to train on different environments.
 
-## **Optional Configurations**
+## **Optional Configuration**
 
 ### Settings: change parameters
 
@@ -517,9 +517,9 @@ If everything loads correctly, you can now use the included script to generate a
 
 **Note:** You can use RViz2 in order to visualize the LiDAR scans for debugging and fine-tuning the REAL_LIDAR_CORRECTION value: simply add a `laser_scan` display type and set its topic to `TOPIC_SCAN`.
 
-# Troubleshooting
+# **Troubleshooting**
 
-### bash: /opt/ros/foxy/setup.bash: No such file or directory
+## **bash: /opt/ros/foxy/setup.bash: No such file or directory**
 
 Depending on your installation method of ROS, it might be required to add the following line to your `~/bashrc` file:
 ```
@@ -527,6 +527,6 @@ source ~/ros2_foxy/ros2-linux/setup.bash
 ```
 Also, make sure that you source the correct setup files in your `~/.bashrc` as described in the installation section of this guide.
 
-### Package 'turtlebot3_gazebo' not found: "package 'turtlebot3_gazebo' not found, searching: ['/opt/ros/foxy']"
+## **Package 'turtlebot3_gazebo' not found: "package 'turtlebot3_gazebo' not found, searching: ['/opt/ros/foxy']"**
 
-Make sure to run `source install/setup.bash` from the root of the repository in every terminal every time after you build the project using `colcon_build`. Otherwise the nodes will not run the updated version of your code but the old version from the last time you built and sourced.
+Make sure to run `source install/setup.bash` from the root of the repository in every terminal every time after you build the project using `colcon_build`. Otherwise, the nodes will not run the updated version of your code but the old version from the last time you built and sourced.
