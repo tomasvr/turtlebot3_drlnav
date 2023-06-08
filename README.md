@@ -3,12 +3,11 @@
 
 ### Models trained in simulation can be transferred and have been validated on a real-world robot.
 
-
-<img src="https://media.giphy.com/media/sjza5rvw42i8IyjvsK/giphy.gif" width="900">
+<img src="https://media.giphy.com/media/8zHZ0kfA2MpCF1X8wB/giphy.gif" width="900" alt="simulation_demo.gif"/>
 
 # **Table of contents**
 
-<img src="https://media.giphy.com/media/xxPRxEU9S93nOafBMI/giphy.gif" width="220" alt="physical_demo.gif" align="right" />
+<img src="https://media.giphy.com/media/r8OmYAR51nnkKAmPjp/giphy.gif" width="220" alt="physical_demo.gif" align="right" />
 
 * [Installation](#installation)
   * [Docker Installation (recommended)](#docker-installation-recommended)
