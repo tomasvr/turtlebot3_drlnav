@@ -11,23 +11,94 @@
 <img src="https://media.giphy.com/media/xxPRxEU9S93nOafBMI/giphy.gif" width="220" alt="physical_demo.gif" align="right" />
 
 * [Installation](#installation)
-  * [ROS2](#installing-ros2)
-  * [Gazebo](#installing-gazebo)
-  * [PyTorch](#installing-python3-pytorch)
-  * [GPU (recommend)](#enabling-gpu-support-recommended)
+  * [Docker Installation (recommended)](#docker-installation-recommended)
+  * [Manual Installation](#manual-installation)
 * [Training](#training)
   * [Loading a Stored Model](#loading-a-stored-model)
-  * [Optional Configurations](#optional-configurations)
-    * [Backward Motion](#backward-motion)
-    * [Frame Stacking](#stacking)
+  * [Optional Configuration](#optional-configuration)
   * [Utilities](#utilities)
-    * [Visualization](#visualization)
 * [Physical Robot](#physical-robot)
 * [Troubleshooting](#troubleshooting)
 
-
-
 # **Installation**
+
+# **Docker Installation (Recommended)**
+
+In order to greatly simplify the installation process and get up and running quickly it is recommended to use Docker. Docker can be seen as a lightweight VM that allows you to run applications within an isolated container making it easy to install all of the dependencies.
+
+First, [install docker](https://docs.docker.com/engine/install/ubuntu/)
+
+Now, in order to use your GPU within the docker container to run the machine learning models, we need to complete a few extra simple steps.
+You should already have the nvidia driver installed on your system.
+
+
+## **Nvidia Container Toolkit**
+
+The next thing we need to do is install the [nvidia container toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/overview.html) which is a piece of software that will allow us to use our GPU within the docker container. The installation steps are listed below.
+
+First, setup the package repository and the GPG key:
+
+```distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+      && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+      && curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | \
+            sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+            sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
+```
+
+Then install the container toolkit:
+```
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+```
+
+Configure the Docker daemon to recognize the NVIDIA Container Runtime:
+```
+sudo nvidia-ctk runtime configure --runtime=docker
+```
+
+And lastly, restart the Docker daemon to complete the installation after setting the default runtime:
+```
+sudo systemctl restart docker
+```
+
+At this point, a working setup can be tested by running a base CUDA container:
+```
+sudo docker run --rm --runtime=nvidia --gpus all nvidia/cuda:11.6.2-base-ubuntu20.04 nvidia-smi
+```
+## **Build and run container**
+
+Now build the container specified in the Dockerfile, which may take 10-20 minutes:
+
+```
+docker build -t turtlebot3_drlnav .
+```
+
+Lastly, we need to give our docker container permission to run GUIs:
+
+```
+xhost +local:docker
+```
+
+Now that everything is set up, start the container: <br>
+(Replace `/PATH/TO/REPO` with the path where you downloaded this repository on your machine)
+```
+docker run -it --gpus all --privileged   --env NVIDIA_VISIBLE_DEVICES=all   --env NVIDIA_DRIVER_CAPABILITIES=all  --env DISPLAY=${DISPLAY}  --env QT_X11_NO_MITSHM=1  --volume /tmp/.X11-unix:/tmp/.X11-unix -v /PATH/TO/REPO/turtlebot3_drlnav:/home/turtlebot3_drlnav   --network host turtlebot3_drlnav
+```
+And that's it! we don't need to install any other dependencies thanks to docker.
+
+While inside the container first build our application:
+```
+colcon build
+```
+And then source our packages:
+```
+source install/setup.bash
+```
+
+Now you are ready to skip to the [Training](#training) section and run the application.
+
+# **Manual Installation**
+
+If you don't want to use docker you can install all dependencies manually.
 
 ## **Dependencies**
 
