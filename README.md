@@ -330,7 +330,7 @@ You will find the trained model, logfiles, and graphs in the model directory: `m
 
 Now you have everything up and running to train your model. There are several additional options and utilities available for training which will be discussed below.
 
-### Loading a stored model
+## Loading a stored model
 
 The current state of the agent (weights, parameters, replay buffer, and graphs) will be stored automatically every N episodes as configured by the `store_interval` variable in the `common/settings.py` file.
 
