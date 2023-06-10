@@ -1,15 +1,14 @@
-# Turtlebot3 DRL navigation
-### A ROS2 framework for DRL autonomous navigation in simulation with mobile robots (Turtlebot3).
+# Mobile Robot DRL Navigation
 
-### Models trained in simulation can be transferred and have been validated on a real-world robot.
+### A ROS2 framework for DRL autonomous navigation on mobile robots with LiDAR.
 
-
-<img src="media/simulation.gif" width="900">
+<img src="media/simulation.gif" width="400">
 
 # **Table of contents**
 
 <img src="media/physical_demo.gif" width="220" alt="physical_demo.gif" align="right" />
 
+* [Introduction](#introduction)
 * [Installation](#installation)
   * [Docker Installation (recommended)](#docker-installation-recommended)
   * [Manual Installation](#manual-installation)
@@ -19,6 +18,18 @@
   * [Utilities](#utilities)
 * [Physical Robot](#physical-robot)
 * [Troubleshooting](#troubleshooting)
+
+# **Introduction**
+
+This repository contains a ROS2 and PyTorch framework for developing and experimenting with deep reinforcement learning for autonomous navigation on mobile robots. Models are trained in simulation and evaluated either in simulation or on a real-world robot. The robot model used in this repository is based on the turtlebot3. However, the framework can be used for any robot model that can provide LiDAR and odometry information and work with linear velocity messages.
+
+Below are a few examples of what the current framework can be used for:
+
+* Train, store, load, and evaluate a navigation agent in simulation in different environments
+* Deploy an existing model on a real robot to perform navigation and obstacle avoidance
+* Evaluate the effect of different hyperparameters on training time and performance
+* Experiment with additional capabilities (backward motion, frame stacking)
+* Implement your own DRL algorithm (currently includes: DQN, DDPG, TD3)
 
 # **Installation**
 
