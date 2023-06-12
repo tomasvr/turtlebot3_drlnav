@@ -1,13 +1,13 @@
 # Mobile Robot DRL Navigation
 
 ### A ROS2 framework for DRL autonomous navigation on mobile robots with LiDAR.
+<p float="left">
+ <img src="media/simulation.gif" width="400">
+ <img src="media/physical_demo.gif" width="216" alt="physical_demo.gif" />
+</p>
 
-<img src="media/simulation.gif" width="400">
 
 # **Table of contents**
-
-<img src="media/physical_demo.gif" width="220" alt="physical_demo.gif" align="right" />
-
 * [Introduction](#introduction)
 * [Installation](#installation)
   * [Docker Installation (recommended)](#docker-installation-recommended)
