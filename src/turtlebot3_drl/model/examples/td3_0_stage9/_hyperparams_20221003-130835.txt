@@ -1,1 +1,19 @@
-1024, 1000000, 44, 2, 512, 0.99, 0.0003, 0.0003, 0.0, AdamW, AdamW, smooth_l1_loss, 0.2, 0.5, 2, G, True, 1, False, 10, 1
+Batch Size: 1024
+Buffer Size: 1000000
+State Size: 44
+Action Size: 2
+Hidden Size: 512
+Discount Factor: 0.99
+Learning Rate: 0.0003
+Tau: 0.0003
+Step Time: 0.0
+Actor Optimizer: AdamW
+Critic Optimizer: AdamW
+Loss Function: smooth_l1_loss
+Log Std Min: 0.2
+Log Std Max: 0.5
+Reward Function: G
+Enable Backward: True
+Simulation Speed: 1
+Enable Stacking: False
+Alpha Start: 10
