@@ -38,6 +38,8 @@ from ..common.settings import ENABLE_BACKWARD, EPISODE_TIMEOUT_SECONDS, ENABLE_M
                                 TOPIC_SCAN, TOPIC_VELO, TOPIC_ODOM, ARENA_LENGTH, ARENA_WIDTH, MAX_NUMBER_OBSTACLES, OBSTACLE_RADIUS, LIDAR_DISTANCE_CAP, \
                                     SPEED_LINEAR_MAX, SPEED_ANGULAR_MAX, THRESHOLD_COLLISION, THREHSOLD_GOAL, ENABLE_DYNAMIC_GOALS
 
+# Automatically retrievew from Gazebo model configuration (40 by default).
+# Can be set manually if needed.
 NUM_SCAN_SAMPLES = util.get_scan_count()
 LINEAR = 0
 ANGULAR = 1

@@ -43,7 +43,13 @@ REAL_TOPIC_SCAN  = 'scan'
 REAL_TOPIC_VELO  = 'cmd_vel'
 REAL_TOPIC_ODOM  = 'odom'
 
-REAL_N_SCAN_SAMPLES         = 40    # LiDAR density count your robot is providing
+# LiDAR density count your robot is providing
+# NOTE: If you change this value you also have to modify
+# NUM_SCAN_SAMPLES for the model in drl_environment.py
+# e.g. if you increase this by 320 samples also increase
+# NUM_SCAN_SAMPLES by 320 samples.
+REAL_N_SCAN_SAMPLES         = 40
+
 REAL_ARENA_LENGTH           = 4.2   # meters
 REAL_ARENA_WIDTH            = 4.2   # meters
 REAL_SPEED_LINEAR_MAX       = 0.22  # in m/s
